@@ -1,0 +1,286 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kenneth & Tong En - Wedding Celebration</title>
+    <meta name="description" content="Join Kenneth & Tong En as they celebrate their wedding on 5 December 2026 at JW Marriott Hotel Singapore South Beach.">
+    <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ctext y='.9em' font-size='90'%3E%F0%9F%92%8D%3C/text%3E%3C/svg%3E">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body class="gate-locked">
+    <!-- Password Gate -->
+    <div class="gate" id="gate">
+        <div class="gate-box">
+            <svg class="logo-emblem gate-emblem" viewBox="0 0 64 64" role="img" aria-hidden="true">
+                <circle cx="32" cy="32" r="30" fill="none" stroke="currentColor" stroke-width="1.4"/>
+                <circle cx="32" cy="32" r="25.5" fill="none" stroke="currentColor" stroke-width="0.7" opacity="0.45"/>
+                <path d="M32 0.6 L34.2 2.8 L32 5 L29.8 2.8 Z" fill="currentColor"/>
+                <path d="M32 59 L34.2 61.2 L32 63.4 L29.8 61.2 Z" fill="currentColor"/>
+                <text x="32" y="38" text-anchor="middle" font-family="Didot, 'Bodoni 72', Baskerville, Georgia, serif" font-size="17" letter-spacing="0.5">
+                    <tspan fill="#ffffff">K</tspan><tspan fill="currentColor" font-style="italic" font-size="18">&amp;</tspan><tspan fill="#ffffff">TE</tspan>
+                </text>
+            </svg>
+            <h1 class="gate-title">Kenneth &amp; Tong En</h1>
+            <p class="gate-text">Please enter the password from your invitation to continue.</p>
+            <form class="gate-form" id="gateForm">
+                <input type="password" id="gateInput" placeholder="Password" autocomplete="off" aria-label="Password" required>
+                <button type="submit">Enter</button>
+            </form>
+            <p class="gate-error" id="gateError">That password isn't right — please check your invitation.</p>
+        </div>
+    </div>
+    <script>
+        (function () {
+            var HASH = '0d3a1095688beb2d887790f7a547eb403948c5d217ecc558c5d73af82686bab2';
+            var KEY = 'weddingUnlocked';
+
+            function unlock() {
+                document.getElementById('gate').classList.add('gate-open');
+                document.body.classList.remove('gate-locked');
+            }
+
+            // Fast path: already unlocked on this device, skip the gate with no flash
+            if (localStorage.getItem(KEY) === '1') {
+                unlock();
+                return;
+            }
+
+            async function sha256(text) {
+                var buf = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(text));
+                return Array.from(new Uint8Array(buf)).map(function (b) {
+                    return b.toString(16).padStart(2, '0');
+                }).join('');
+            }
+
+            document.addEventListener('DOMContentLoaded', function () {
+                var form = document.getElementById('gateForm');
+                var input = document.getElementById('gateInput');
+                var error = document.getElementById('gateError');
+
+                form.addEventListener('submit', async function (e) {
+                    e.preventDefault();
+                    var digest = await sha256(input.value.trim());
+                    if (digest === HASH) {
+                        localStorage.setItem(KEY, '1');
+                        unlock();
+                    } else {
+                        error.classList.add('show');
+                        input.value = '';
+                        input.focus();
+                    }
+                });
+            });
+        })();
+    </script>
+
+    <!-- Navigation -->
+    <nav class="navbar">
+        <div class="nav-container">
+            <a href="#hero" class="nav-logo" aria-label="Kenneth & Tong En — top of page">
+                <svg class="logo-emblem" viewBox="0 0 64 64" role="img" aria-hidden="true">
+                    <circle cx="32" cy="32" r="30" fill="none" stroke="currentColor" stroke-width="1.4"/>
+                    <circle cx="32" cy="32" r="25.5" fill="none" stroke="currentColor" stroke-width="0.7" opacity="0.45"/>
+                    <path d="M32 0.6 L34.2 2.8 L32 5 L29.8 2.8 Z" fill="currentColor"/>
+                    <path d="M32 59 L34.2 61.2 L32 63.4 L29.8 61.2 Z" fill="currentColor"/>
+                    <text x="32" y="38" text-anchor="middle" font-family="Didot, 'Bodoni 72', Baskerville, Georgia, serif" font-size="17" letter-spacing="0.5">
+                        <tspan fill="#ffffff">K</tspan><tspan fill="currentColor" font-style="italic" font-size="18">&amp;</tspan><tspan fill="#ffffff">TE</tspan>
+                    </text>
+                </svg>
+            </a>
+            <button class="nav-toggle" id="navToggle" aria-label="Toggle menu" aria-expanded="false">
+                <span></span>
+                <span></span>
+                <span></span>
+            </button>
+            <ul class="nav-menu" id="navMenu">
+                <li><a href="#timeline" class="nav-link">Wedding Schedule</a></li>
+                <li><a href="#details" class="nav-link">Event Details</a></li>
+                <li><a href="#gallery" class="nav-link">Gallery</a></li>
+                <li><a href="#rsvp" class="nav-link">RSVP</a></li>
+                <li><a href="#getting-here" class="nav-link">Getting Here</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <!-- Hero Section with Background Image -->
+    <section id="hero" class="hero">
+        <div class="hero-overlay"></div>
+        <div class="hero-content">
+            <h1 class="hero-title">Welcome to the Wedding of Kenneth & Tong En</h1>
+            <p class="hero-date">5 December 2026 • JW Marriott South Beach Road</p>
+        </div>
+    </section>
+
+    <!-- Countdown Timer -->
+    <section class="countdown">
+        <h2>Countdown to Our Special Day</h2>
+        <div class="countdown-container">
+            <div class="countdown-item">
+                <span class="countdown-value" id="days">0</span>
+                <span class="countdown-label">Days</span>
+            </div>
+            <div class="countdown-item">
+                <span class="countdown-value" id="hours">0</span>
+                <span class="countdown-label">Hours</span>
+            </div>
+            <div class="countdown-item">
+                <span class="countdown-value" id="minutes">0</span>
+                <span class="countdown-label">Minutes</span>
+            </div>
+            <div class="countdown-item">
+                <span class="countdown-value" id="seconds">0</span>
+                <span class="countdown-label">Seconds</span>
+            </div>
+        </div>
+    </section>
+
+    <!-- Timeline Section -->
+    <section id="timeline" class="timeline">
+        <h2>Wedding Day Schedule</h2>
+        <div class="timeline-container">
+            <div class="timeline-item">
+                <div class="timeline-time">10:30 AM</div>
+                <div class="timeline-marker"></div>
+                <div class="timeline-content">
+                    <h3>Tea Ceremony</h3>
+                    <p>A traditional celebration with family</p>
+                </div>
+            </div>
+
+            <div class="timeline-item">
+                <div class="timeline-time">11:00 AM</div>
+                <div class="timeline-marker"></div>
+                <div class="timeline-content">
+                    <h3>Reception</h3>
+                    <p>Welcome our beloved guests</p>
+                </div>
+            </div>
+
+            <div class="timeline-item">
+                <div class="timeline-time">1:00 PM</div>
+                <div class="timeline-marker"></div>
+                <div class="timeline-content">
+                    <h3>Lunch</h3>
+                    <p>Celebrate with a delicious feast</p>
+                </div>
+            </div>
+
+            <div class="timeline-item">
+                <div class="timeline-time">4:00 PM</div>
+                <div class="timeline-marker"></div>
+                <div class="timeline-content">
+                    <h3>End of Wedding</h3>
+                    <p>Thank you for celebrating with us</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Event Details -->
+    <section id="details" class="details">
+        <div class="details-container">
+            <h2>Event Details</h2>
+
+            <div class="details-grid">
+                <div class="detail-card">
+                    <h3>📅 Date & Time</h3>
+                    <p><strong>Saturday, 5th December 2026</strong></p>
+                    <p>10:30 AM - 4:00 PM</p>
+                </div>
+
+                <div class="detail-card">
+                    <h3>📍 Venue</h3>
+                    <p><strong>JW Marriott Hotel Singapore</strong></p>
+                    <p><strong>South Beach Road</strong></p>
+                </div>
+
+                <div class="detail-card">
+                    <h3>👔 Dress Code</h3>
+                    <p><strong>Black Colour</strong></p>
+                </div>
+
+            </div>
+
+            <div class="calendar-cta">
+                <button class="calendar-btn" id="addToCalendar">📅 Add to Calendar</button>
+            </div>
+        </div>
+    </section>
+
+
+    <!-- Photo Gallery -->
+    <section id="gallery" class="gallery">
+        <h2>Our Pre-Wedding Photoshoot at Lijiang (Yunnan Province), China</h2>
+        <button class="album-back" id="albumBack" hidden>&larr; Back to albums</button>
+        <h3 class="album-title" id="albumTitle" hidden></h3>
+        <div class="gallery-container" id="galleryContainer">
+            <!-- Album covers, then photos, are rendered here by script.js -->
+        </div>
+        <p class="gallery-note" id="galleryNote">Select an album to view the photos.</p>
+    </section>
+
+    <!-- RSVP Section -->
+    <section id="rsvp" class="rsvp">
+        <h2>RSVP</h2>
+        <p class="rsvp-subtitle">Please confirm your attendance by 05 October 2026</p>
+
+        <div class="rsvp-cta">
+            <p class="rsvp-cta-text">We would be delighted to celebrate with you.</p>
+            <a class="rsvp-btn" href="https://forms.gle/FYwxCWmZfKcHgAwEA" target="_blank" rel="noopener">
+                RSVP Here
+            </a>
+            <p class="rsvp-cta-note">Opens our RSVP form in a new tab</p>
+        </div>
+
+    </section>
+
+    <!-- Getting Here Section -->
+    <section id="getting-here" class="getting-here">
+        <h2>Getting Here</h2>
+        <div class="venue-container">
+            <div class="venue-card">
+                <h3>Venue Address</h3>
+                <p class="venue-name">JW Marriott Hotel Singapore South Beach</p>
+                <p class="venue-address">30 Beach Road</p>
+                <p class="venue-address">Access via Nicoll Highway</p>
+                <p class="venue-address">Singapore 189763</p>
+            </div>
+            <div class="venue-card">
+                <h3>How to Get There</h3>
+
+                <p style="margin-top: 1rem;"><strong>By Car:</strong></p>
+                <p style="margin-bottom: 0.5rem;"><strong>Via Nicoll Highway:</strong> Proceed along Nicoll Highway towards Raffles Boulevard. Make a U-turn at the Bras Basah Road Junction. Continue forward and turn left into South Beach.</p>
+                <p style="margin-bottom: 1rem;"><strong>Via Bras Basah Road:</strong> Proceed along Bras Basah Road, then turn left onto Nicoll Highway. Continue forward and turn left into South Beach.</p>
+                <p style="font-size: 0.9rem; color: var(--accent);">Complimentary parking tickets available at the venue.</p>
+
+                <p style="margin-top: 1.5rem;"><strong>By MRT:</strong></p>
+                <p style="margin-bottom: 0.5rem;"><strong>Via Esplanade MRT Station:</strong> Exit through exit F of Esplanade MRT station</p>
+                <p style="margin-bottom: 1rem;"><strong>Via City Hall MRT Station:</strong> Take the Citylink Mall underpass to exit F of Esplanade MRT station</p>
+
+                <p style="margin-top: 1.5rem;"><strong>By Bus:</strong></p>
+                <p style="margin-bottom: 0.5rem;"><strong>Along Beach Road:</strong> Bus Stop 01619 - Services 56, 57, 100, 107, 107M, 961</p>
+                <p><strong>Along Nicoll Highway:</strong> Bus Stop 80151 - Services 10, 10e, 14, 14e, 16, 70, 70M, 196, 196e</p>
+            </div>
+            <div class="venue-map">
+                <iframe src="https://www.google.com/maps?q=JW+Marriott+Hotel+Singapore+South+Beach,+30+Beach+Road,+Singapore&output=embed" width="100%" height="100%" style="border:0;" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <p>&hearts; Kenneth & Tong En &hearts;</p>
+        <p>5th December 2026 • JW Marriott South Beach Road</p>
+        <p style="margin-top: 15px; font-size: 0.9em; opacity: 0.8;">Thank you for celebrating with us!</p>
+    </footer>
+
+    <!-- Lightbox for gallery photos -->
+    <div class="lightbox" id="lightbox" aria-hidden="true">
+        <button class="lightbox-close" id="lightboxClose" aria-label="Close">&times;</button>
+        <img class="lightbox-img" id="lightboxImg" src="" alt="">
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
