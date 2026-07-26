@@ -1141,11 +1141,42 @@ body {
     .rsvp,
     .countdown,
     .getting-here {
-        padding: 3rem 1.5rem;
+        padding: 3rem 1rem;
     }
 
     .details-grid {
         gap: 1.5rem;
+    }
+
+    /* Gallery: 2-up grids on phones instead of one tall column */
+    .gallery-container {
+        grid-template-columns: 1fr 1fr;
+        gap: 0.6rem;
+        margin-bottom: 1.5rem;
+    }
+
+    .album-grid {
+        grid-template-columns: 1fr 1fr;
+    }
+
+    .gallery-item {
+        height: 220px;
+    }
+
+    .album-tile {
+        height: 200px;
+    }
+
+    .album-tile-overlay {
+        padding: 1rem;
+    }
+
+    .album-tile-name {
+        font-size: 1.05rem;
+    }
+
+    .album-tile-count {
+        font-size: 0.7rem;
     }
 }
 
@@ -1175,7 +1206,16 @@ body {
         font-size: 1.8rem;
     }
 
+    /* Tighter 2-up grid on small phones */
     .gallery-item {
-        height: 250px;
+        height: 165px;
+    }
+
+    .album-tile {
+        height: 175px;
+    }
+
+    .hero-title {
+        font-size: 1.75rem;
     }
 }
