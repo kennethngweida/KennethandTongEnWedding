@@ -513,34 +513,42 @@ body {
     font-size: 0.95rem;
 }
 
-/* Responsive Timeline */
+/* Responsive Timeline — line on the far left, time + card stacked to its right */
 @media (max-width: 768px) {
     .timeline-container::before {
-        left: 20px;
+        left: 7px;
     }
 
-    .timeline-item {
-        flex-direction: row !important;
-        gap: 1rem;
-    }
-
+    .timeline-item,
+    .timeline-item:nth-child(odd),
     .timeline-item:nth-child(even) {
-        flex-direction: row !important;
-    }
-
-    .timeline-time {
-        flex: 0 0 80px;
-        font-size: 0.9rem;
-        text-align: left;
+        flex-direction: column !important;
+        gap: 0.4rem;
+        padding-left: 2.5rem;
+        margin-bottom: 2rem;
     }
 
     .timeline-marker {
-        left: 20px;
+        left: 7px;
+        top: 6px;
+        transform: translate(-50%, 0);
+    }
+
+    .timeline-time {
+        flex: none;
+        justify-content: flex-start;
+        align-items: flex-start;
+        text-align: left;
+        font-size: 1rem;
+    }
+
+    .timeline-item:nth-child(odd) .timeline-content,
+    .timeline-item:nth-child(even) .timeline-content {
+        margin-left: 0;
+        margin-right: 0;
     }
 
     .timeline-content {
-        margin-left: 1rem !important;
-        margin-right: 0 !important;
         padding: 1.5rem;
     }
 
@@ -555,7 +563,7 @@ body {
 
 @media (max-width: 480px) {
     .timeline {
-        padding: 3rem 1.5rem;
+        padding: 3rem 1.25rem;
     }
 
     .timeline h2 {
@@ -563,8 +571,7 @@ body {
     }
 
     .timeline-time {
-        flex: 0 0 70px;
-        font-size: 0.8rem;
+        font-size: 0.9rem;
     }
 
     .timeline-content {
@@ -1106,6 +1113,11 @@ body {
     /* Underline animation doesn't fit stacked links */
     .nav-menu .nav-link::after {
         display: none;
+    }
+
+    /* iOS Safari fails to render fixed backgrounds — use scroll on mobile */
+    .hero {
+        background-attachment: scroll;
     }
 
     .hero-title {
