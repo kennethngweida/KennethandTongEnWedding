@@ -301,9 +301,79 @@ const SUPABASE_CONFIG = {
             status.className = 'upload-status show success';
             items.forEach(it => URL.revokeObjectURL(it.url));
             items = []; render(); sendBtn.hidden = true; countEl.textContent = '';
+            loadGuestGallery();
         } else {
             status.textContent = `${ok} uploaded, ${fail} didn't go through — please try those again.`;
             status.className = 'upload-status show error';
         }
     });
+
+    // ---- Guest gallery: display everyone's uploaded photos ----
+    const galleryGrid = document.getElementById('guestGalleryGrid');
+    const galleryNote = document.getElementById('guestGalleryNote');
+    const glBox = document.getElementById('galleryLightbox');
+    const glImg = document.getElementById('galleryLightboxImg');
+    const glClose = document.getElementById('galleryLightboxClose');
+    const IMG_RE = /\.(jpe?g|png|gif|webp|heic)$/i;
+
+    function openGalleryLightbox(url) {
+        glImg.src = url;
+        glBox.classList.add('open');
+        glBox.setAttribute('aria-hidden', 'false');
+    }
+    function closeGalleryLightbox() {
+        glBox.classList.remove('open');
+        glBox.setAttribute('aria-hidden', 'true');
+        glImg.src = '';
+    }
+    if (glBox) {
+        glBox.addEventListener('click', closeGalleryLightbox);
+        glClose.addEventListener('click', closeGalleryLightbox);
+        document.addEventListener('keydown', e => { if (e.key === 'Escape') closeGalleryLightbox(); });
+    }
+
+    async function loadGuestGallery() {
+        if (!galleryGrid) return;
+        try {
+            const { data: top, error } = await client.storage.from(SUPABASE_CONFIG.bucket).list('', { limit: 1000 });
+            if (error) throw error;
+            const all = [];
+            for (const entry of top) {
+                if (entry.id === null) {
+                    if (entry.name === '_setup-test') continue; // skip setup test folder
+                    const { data: files } = await client.storage.from(SUPABASE_CONFIG.bucket)
+                        .list(entry.name, { limit: 1000 });
+                    (files || []).forEach(f => {
+                        if (f.id && IMG_RE.test(f.name)) all.push({ path: `${entry.name}/${f.name}`, at: f.created_at || '' });
+                    });
+                } else if (IMG_RE.test(entry.name)) {
+                    all.push({ path: entry.name, at: entry.created_at || '' });
+                }
+            }
+            all.sort((a, b) => (b.at || '').localeCompare(a.at || '')); // newest first
+            if (!all.length) {
+                galleryNote.textContent = 'No photos yet — be the first to share!';
+                galleryGrid.innerHTML = '';
+                return;
+            }
+            galleryNote.textContent = `${all.length} photo${all.length > 1 ? 's' : ''} shared so far`;
+            galleryGrid.innerHTML = '';
+            all.forEach(o => {
+                const url = client.storage.from(SUPABASE_CONFIG.bucket).getPublicUrl(o.path).data.publicUrl;
+                const cell = document.createElement('div');
+                cell.className = 'guest-photo';
+                const img = document.createElement('img');
+                img.src = url;
+                img.loading = 'lazy';
+                img.alt = '';
+                cell.appendChild(img);
+                cell.addEventListener('click', () => openGalleryLightbox(url));
+                galleryGrid.appendChild(cell);
+            });
+        } catch (e) {
+            console.error(e);
+            galleryNote.textContent = 'The shared photo gallery isn’t switched on yet.';
+        }
+    }
+    loadGuestGallery();
 })();
