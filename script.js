@@ -269,8 +269,8 @@ document.addEventListener('DOMContentLoaded', function() {
 // Fill url + anonKey with your Supabase project values to switch this on.
 // Until then the whole section stays hidden from guests.
 const SUPABASE_CONFIG = {
-    url: 'SUPABASE_URL_PLACEHOLDER',
-    anonKey: 'SUPABASE_ANON_KEY_PLACEHOLDER',
+    url: 'https://gruwjaiayfvjmjvhmrzq.supabase.co',
+    anonKey: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImdydXdqYWlheWZ2am1qdmhtcnpxIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODczMDA4ODcsImV4cCI6MjEwMjg3Njg4N30.t4BO5aGJvwqYZ7ZJDhEOMKWK2BYLksE8iZtHUqQQr2A',
     bucket: 'guest-photos'
 };
 
