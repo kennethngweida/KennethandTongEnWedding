@@ -100,6 +100,31 @@ const SUPABASE_CONFIG = {
     let stream = null;
     let facing = 'environment';
 
+    // Filters guests can choose — the CSS filter drives both the live preview and the saved photo
+    const FILTERS = [
+        { name: 'Disposable', filter: 'contrast(1.1) saturate(1.25) sepia(0.14) brightness(1.03)', grain: 0.06, vignette: 0.4, leak: true },
+        { name: 'Classic', filter: 'contrast(1.05) saturate(1.05)', grain: 0.02, vignette: 0.2, leak: false },
+        { name: 'B&W', filter: 'grayscale(1) contrast(1.15) brightness(1.02)', grain: 0.05, vignette: 0.35, leak: false },
+        { name: 'Vintage', filter: 'sepia(0.5) contrast(0.95) saturate(1.1) brightness(1.05)', grain: 0.07, vignette: 0.45, leak: true },
+        { name: 'Warm', filter: 'sepia(0.2) saturate(1.3) contrast(1.05) brightness(1.05)', grain: 0.03, vignette: 0.25, leak: true },
+        { name: 'Cool', filter: 'hue-rotate(-10deg) saturate(1.1) contrast(1.08) brightness(1.02)', grain: 0.03, vignette: 0.3, leak: false }
+    ];
+    let selected = FILTERS[0];
+    const filtersEl = document.getElementById('cameraFilters');
+    FILTERS.forEach(f => {
+        const chip = document.createElement('button');
+        chip.type = 'button';
+        chip.className = 'filter-chip' + (f === selected ? ' active' : '');
+        chip.textContent = f.name;
+        chip.addEventListener('click', () => {
+            selected = f;
+            filtersEl.querySelectorAll('.filter-chip').forEach(c => c.classList.remove('active'));
+            chip.classList.add('active');
+            video.style.filter = f.filter;
+        });
+        filtersEl.appendChild(chip);
+    });
+
     function stopCamera() {
         if (stream) { stream.getTracks().forEach(t => t.stop()); stream = null; }
         video.srcObject = null;
@@ -114,6 +139,7 @@ const SUPABASE_CONFIG = {
                 audio: false
             });
             video.srcObject = stream;
+            video.style.filter = selected.filter;
             video.play().catch(() => {});
         } catch (err) {
             camError.hidden = false;
@@ -213,24 +239,28 @@ const SUPABASE_CONFIG = {
 
         ctx.save();
         if (facing === 'user') { ctx.translate(w, 0); ctx.scale(-1, 1); }
-        ctx.filter = 'contrast(1.1) saturate(1.25) sepia(0.14) brightness(1.03)';
+        ctx.filter = selected.filter;
         ctx.drawImage(video, 0, 0, w, h);
         ctx.restore();
         ctx.filter = 'none';
 
-        addGrain(ctx, w, h, 0.06);
+        if (selected.grain) addGrain(ctx, w, h, selected.grain);
 
-        const vig = ctx.createRadialGradient(w / 2, h / 2, Math.min(w, h) * 0.35, w / 2, h / 2, Math.max(w, h) * 0.75);
-        vig.addColorStop(0, 'rgba(0,0,0,0)');
-        vig.addColorStop(1, 'rgba(0,0,0,0.4)');
-        ctx.fillStyle = vig;
-        ctx.fillRect(0, 0, w, h);
+        if (selected.vignette) {
+            const vig = ctx.createRadialGradient(w / 2, h / 2, Math.min(w, h) * 0.35, w / 2, h / 2, Math.max(w, h) * 0.75);
+            vig.addColorStop(0, 'rgba(0,0,0,0)');
+            vig.addColorStop(1, `rgba(0,0,0,${selected.vignette})`);
+            ctx.fillStyle = vig;
+            ctx.fillRect(0, 0, w, h);
+        }
 
-        const leak = ctx.createLinearGradient(w, 0, w * 0.6, h * 0.4);
-        leak.addColorStop(0, 'rgba(255,140,60,0.18)');
-        leak.addColorStop(1, 'rgba(255,140,60,0)');
-        ctx.fillStyle = leak;
-        ctx.fillRect(0, 0, w, h);
+        if (selected.leak) {
+            const leak = ctx.createLinearGradient(w, 0, w * 0.6, h * 0.4);
+            leak.addColorStop(0, 'rgba(255,140,60,0.18)');
+            leak.addColorStop(1, 'rgba(255,140,60,0)');
+            ctx.fillStyle = leak;
+            ctx.fillRect(0, 0, w, h);
+        }
 
         drawStamp(ctx, w, h);
         flashEffect();
