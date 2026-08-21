@@ -1044,6 +1044,147 @@ body {
     box-shadow: 0 8px 20px rgba(212, 165, 116, 0.3);
 }
 
+/* Share Photos Section */
+.share-photos {
+    padding: 5rem 1.5rem;
+    background: var(--bg-dark);
+    border-top: 1px solid rgba(212, 165, 116, 0.2);
+    text-align: center;
+}
+
+.share-photos h2 {
+    font-size: 2rem;
+    color: var(--accent);
+    font-weight: 300;
+    letter-spacing: 1px;
+    margin-bottom: 0.8rem;
+}
+
+.share-subtitle {
+    max-width: 600px;
+    margin: 0 auto 2.5rem;
+    color: var(--text);
+    font-size: 0.95rem;
+}
+
+.upload-card {
+    max-width: 520px;
+    margin: 0 auto;
+    background: var(--bg-card);
+    border: 1px solid rgba(212, 165, 116, 0.25);
+    border-radius: 8px;
+    padding: 2.5rem 2rem;
+}
+
+.upload-name {
+    display: block;
+    text-align: left;
+    margin-bottom: 1.5rem;
+}
+
+.upload-name span {
+    display: block;
+    color: var(--accent);
+    font-size: 0.85rem;
+    font-weight: 600;
+    letter-spacing: 0.5px;
+    margin-bottom: 0.6rem;
+}
+
+.upload-name input {
+    width: 100%;
+    padding: 0.9rem;
+    background: var(--primary);
+    border: 1px solid rgba(212, 165, 116, 0.3);
+    color: var(--text);
+    font-family: inherit;
+    font-size: 0.95rem;
+}
+
+.upload-name input:focus {
+    outline: none;
+    border-color: var(--accent);
+    box-shadow: 0 0 0 2px rgba(212, 165, 116, 0.2);
+}
+
+.upload-choose-btn {
+    width: 100%;
+    padding: 1.1rem;
+    background: transparent;
+    color: var(--accent);
+    border: 1px dashed rgba(212, 165, 116, 0.5);
+    border-radius: 4px;
+    font-family: inherit;
+    font-size: 0.95rem;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.upload-choose-btn:hover {
+    background: rgba(212, 165, 116, 0.08);
+    border-color: var(--accent);
+}
+
+.upload-list {
+    list-style: none;
+    text-align: left;
+    margin: 1.25rem 0 0;
+    padding: 0;
+}
+
+.upload-list li {
+    color: var(--text);
+    font-size: 0.85rem;
+    padding: 0.4rem 0;
+    border-bottom: 1px solid rgba(212, 165, 116, 0.1);
+    word-break: break-all;
+}
+
+.upload-send-btn {
+    width: 100%;
+    margin-top: 1.5rem;
+    padding: 1.1rem;
+    background: var(--accent);
+    color: var(--white);
+    border: none;
+    border-radius: 2px;
+    font-family: inherit;
+    font-size: 0.85rem;
+    font-weight: 600;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.upload-send-btn:hover {
+    background: #c89050;
+}
+
+.upload-send-btn:disabled {
+    opacity: 0.6;
+    cursor: default;
+}
+
+.upload-status {
+    margin-top: 1.25rem;
+    font-size: 0.9rem;
+    min-height: 1.2em;
+    display: none;
+}
+
+.upload-status.show {
+    display: block;
+}
+
+.upload-status.success {
+    color: #10b981;
+}
+
+.upload-status.error {
+    color: #e57373;
+}
+
 /* Footer */
 .footer {
     background: var(--primary);

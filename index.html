@@ -100,6 +100,7 @@
                 <li><a href="#timeline" class="nav-link">Wedding Schedule</a></li>
                 <li><a href="#details" class="nav-link">Event Details</a></li>
                 <li><a href="#gallery" class="nav-link">Gallery</a></li>
+                <li><a href="#share-photos" class="nav-link">Share Photos</a></li>
                 <li><a href="#rsvp" class="nav-link">RSVP</a></li>
                 <li><a href="#getting-here" class="nav-link">Getting Here</a></li>
             </ul>
@@ -223,6 +224,26 @@
         <p class="gallery-note" id="galleryNote">Select an album to view the photos.</p>
     </section>
 
+    <!-- Share Photos Section -->
+    <section id="share-photos" class="share-photos">
+        <h2>Share Your Photos</h2>
+        <p class="share-subtitle">Be our disposable camera for the day — snap your favourite moments from the celebration and share them straight to us.</p>
+        <div class="upload-card">
+            <label class="upload-name">
+                <span>Your name (optional)</span>
+                <input type="text" id="uploaderName" placeholder="e.g. Aunt May" autocomplete="name" maxlength="60">
+            </label>
+
+            <input type="file" id="photoInput" accept="image/*" multiple hidden>
+            <button type="button" class="upload-choose-btn" id="choosePhotosBtn">📷 Choose Photos</button>
+
+            <ul class="upload-list" id="uploadList"></ul>
+
+            <button type="button" class="upload-send-btn" id="uploadBtn" hidden>Share with Kenneth &amp; Tong En</button>
+            <p class="upload-status" id="uploadStatus"></p>
+        </div>
+    </section>
+
     <!-- RSVP Section -->
     <section id="rsvp" class="rsvp">
         <h2>RSVP</h2>
@@ -284,6 +305,7 @@
         <img class="lightbox-img" id="lightboxImg" src="" alt="">
     </div>
 
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <script src="script.js"></script>
 </body>
 </html>
