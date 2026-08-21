@@ -1107,37 +1107,123 @@ body {
     box-shadow: 0 0 0 2px rgba(212, 165, 116, 0.2);
 }
 
-.upload-choose-btn {
-    width: 100%;
-    padding: 1.1rem;
-    background: transparent;
-    color: var(--accent);
-    border: 1px dashed rgba(212, 165, 116, 0.5);
-    border-radius: 4px;
-    font-family: inherit;
-    font-size: 0.95rem;
+.dropzone {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 0.35rem;
+    padding: 2.5rem 1.5rem;
+    background: rgba(212, 165, 116, 0.04);
+    border: 1.5px dashed rgba(212, 165, 116, 0.45);
+    border-radius: 10px;
     cursor: pointer;
-    transition: all 0.3s ease;
+    transition: all 0.25s ease;
 }
 
-.upload-choose-btn:hover {
-    background: rgba(212, 165, 116, 0.08);
+.dropzone:hover,
+.dropzone:focus-visible,
+.dropzone.dragover {
+    background: rgba(212, 165, 116, 0.1);
     border-color: var(--accent);
+    outline: none;
+    transform: translateY(-2px);
 }
 
-.upload-list {
-    list-style: none;
-    text-align: left;
-    margin: 1.25rem 0 0;
-    padding: 0;
+.dropzone-icon {
+    width: 40px;
+    height: 40px;
+    color: var(--accent);
+    margin-bottom: 0.25rem;
 }
 
-.upload-list li {
-    color: var(--text);
-    font-size: 0.85rem;
-    padding: 0.4rem 0;
-    border-bottom: 1px solid rgba(212, 165, 116, 0.1);
-    word-break: break-all;
+.dropzone-title {
+    color: var(--white);
+    font-size: 1rem;
+    font-weight: 500;
+    margin: 0;
+}
+
+.dropzone-hint {
+    color: var(--gray-dark);
+    font-size: 0.8rem;
+    margin: 0;
+}
+
+.preview-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(84px, 1fr));
+    gap: 0.6rem;
+    margin-top: 1.5rem;
+}
+
+.preview-item {
+    position: relative;
+    aspect-ratio: 1 / 1;
+    border-radius: 6px;
+    overflow: hidden;
+    border: 1px solid rgba(212, 165, 116, 0.25);
+}
+
+.preview-item img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+}
+
+.preview-remove {
+    position: absolute;
+    top: 3px;
+    right: 3px;
+    width: 22px;
+    height: 22px;
+    border: none;
+    border-radius: 50%;
+    background: rgba(10, 10, 10, 0.75);
+    color: #fff;
+    font-size: 15px;
+    line-height: 1;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: background 0.2s ease;
+}
+
+.preview-remove:hover {
+    background: #e57373;
+}
+
+.preview-item.too-large::after {
+    content: 'Too large';
+    position: absolute;
+    inset: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: rgba(10, 10, 10, 0.7);
+    color: #e57373;
+    font-size: 0.7rem;
+    text-align: center;
+}
+
+.upload-progress {
+    margin-top: 1.25rem;
+    height: 6px;
+    width: 100%;
+    background: rgba(212, 165, 116, 0.15);
+    border-radius: 3px;
+    overflow: hidden;
+}
+
+.upload-progress-bar {
+    display: block;
+    height: 100%;
+    width: 0;
+    background: var(--accent);
+    border-radius: 3px;
+    transition: width 0.3s ease;
 }
 
 .upload-send-btn {
@@ -1183,6 +1269,172 @@ body {
 
 .upload-status.error {
     color: #e57373;
+}
+
+/* Take-a-photo button */
+.camera-open-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.6rem;
+    width: 100%;
+    padding: 1.15rem;
+    background: var(--accent);
+    color: var(--white);
+    border: none;
+    border-radius: 6px;
+    font-family: inherit;
+    font-size: 1rem;
+    font-weight: 600;
+    letter-spacing: 0.5px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.camera-open-btn svg {
+    width: 22px;
+    height: 22px;
+}
+
+.camera-open-btn:hover {
+    background: #c89050;
+    transform: translateY(-2px);
+    box-shadow: 0 8px 20px rgba(212, 165, 116, 0.3);
+}
+
+.upload-or {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    margin: 1.5rem 0;
+    color: var(--gray-dark);
+    font-size: 0.75rem;
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
+}
+
+.upload-or::before,
+.upload-or::after {
+    content: '';
+    flex: 1;
+    height: 1px;
+    background: rgba(212, 165, 116, 0.2);
+}
+
+/* Camera modal */
+.camera-modal {
+    display: none;
+    position: fixed;
+    inset: 0;
+    z-index: 3000;
+    background: #000;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+
+.camera-modal.open {
+    display: flex;
+}
+
+.camera-stage {
+    position: relative;
+    width: 100%;
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+}
+
+.camera-stage video {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.camera-viewfinder {
+    position: absolute;
+    inset: 8%;
+    pointer-events: none;
+    border: 1px solid rgba(255, 255, 255, 0.25);
+    border-radius: 6px;
+    box-shadow: 0 0 0 100vmax rgba(0, 0, 0, 0.15) inset;
+}
+
+.camera-error {
+    position: absolute;
+    max-width: 80%;
+    text-align: center;
+    color: #fff;
+    font-size: 0.95rem;
+    line-height: 1.5;
+}
+
+.camera-controls {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 3rem;
+    padding: 1.75rem 1rem calc(1.75rem + env(safe-area-inset-bottom));
+    background: #000;
+    width: 100%;
+}
+
+.camera-ctrl {
+    width: 52px;
+    height: 52px;
+    border-radius: 50%;
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    background: rgba(255, 255, 255, 0.08);
+    color: #fff;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: background 0.2s ease;
+}
+
+.camera-ctrl svg {
+    width: 22px;
+    height: 22px;
+}
+
+.camera-ctrl:hover {
+    background: rgba(255, 255, 255, 0.18);
+}
+
+.camera-shutter {
+    width: 74px;
+    height: 74px;
+    border-radius: 50%;
+    background: #fff;
+    border: 4px solid rgba(255, 255, 255, 0.4);
+    box-shadow: 0 0 0 3px #000, 0 0 0 5px rgba(255, 255, 255, 0.5);
+    cursor: pointer;
+    transition: transform 0.1s ease;
+}
+
+.camera-shutter:active {
+    transform: scale(0.92);
+}
+
+.camera-flash {
+    position: fixed;
+    inset: 0;
+    background: #fff;
+    z-index: 3100;
+    opacity: 0;
+    pointer-events: none;
+}
+
+.camera-flash.fire {
+    animation: cameraFlash 0.35s ease-out;
+}
+
+@keyframes cameraFlash {
+    0% { opacity: 0.9; }
+    100% { opacity: 0; }
 }
 
 /* Footer */
