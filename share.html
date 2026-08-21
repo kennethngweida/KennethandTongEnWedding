@@ -9,9 +9,57 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;500;600&family=Great+Vibes&family=Montserrat:wght@400;500&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="style.css?v=25">
+    <link rel="stylesheet" href="style.css?v=26">
 </head>
-<body>
+<body class="gate-locked">
+    <!-- Password Gate -->
+    <div class="gate" id="gate">
+        <div class="gate-box">
+            <svg class="logo-emblem gate-emblem" viewBox="0 0 64 64" role="img" aria-hidden="true">
+                <circle cx="32" cy="32" r="30" fill="none" stroke="currentColor" stroke-width="1.4"/>
+                <circle cx="32" cy="32" r="25.5" fill="none" stroke="currentColor" stroke-width="0.7" opacity="0.45"/>
+                <path d="M32 0.6 L34.2 2.8 L32 5 L29.8 2.8 Z" fill="currentColor"/>
+                <path d="M32 59 L34.2 61.2 L32 63.4 L29.8 61.2 Z" fill="currentColor"/>
+                <text x="32" y="38" text-anchor="middle" font-family="Didot, 'Bodoni 72', Baskerville, Georgia, serif" font-size="17" letter-spacing="0.5">
+                    <tspan fill="#ffffff">K</tspan><tspan fill="currentColor" font-style="italic" font-size="18">&amp;</tspan><tspan fill="#ffffff">TE</tspan>
+                </text>
+            </svg>
+            <h1 class="gate-title">Share Your Photos</h1>
+            <p class="gate-text">Please enter the password from your invitation to continue.</p>
+            <form class="gate-form" id="gateForm">
+                <input type="password" id="gateInput" placeholder="Password" autocomplete="off" aria-label="Password" required>
+                <button type="submit">Enter</button>
+            </form>
+            <p class="gate-error" id="gateError">That password isn't right — please check your invitation.</p>
+        </div>
+    </div>
+    <script>
+        (function () {
+            var HASH = '0d3a1095688beb2d887790f7a547eb403948c5d217ecc558c5d73af82686bab2';
+            var KEY = 'weddingUnlocked';
+            function unlock() {
+                document.getElementById('gate').classList.add('gate-open');
+                document.body.classList.remove('gate-locked');
+            }
+            if (localStorage.getItem(KEY) === '1') { unlock(); return; }
+            async function sha256(text) {
+                var buf = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(text));
+                return Array.from(new Uint8Array(buf)).map(function (b) { return b.toString(16).padStart(2, '0'); }).join('');
+            }
+            document.addEventListener('DOMContentLoaded', function () {
+                var form = document.getElementById('gateForm');
+                var input = document.getElementById('gateInput');
+                var error = document.getElementById('gateError');
+                form.addEventListener('submit', async function (e) {
+                    e.preventDefault();
+                    var digest = await sha256(input.value.trim());
+                    if (digest === HASH) { localStorage.setItem(KEY, '1'); unlock(); }
+                    else { error.classList.add('show'); input.value = ''; input.focus(); }
+                });
+            });
+        })();
+    </script>
+
     <!-- Header -->
     <header class="share-header">
         <a href="index.html" class="nav-logo" aria-label="Back to wedding site">
@@ -101,6 +149,6 @@
     </div>
 
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-    <script src="share.js?v=25"></script>
+    <script src="share.js?v=26"></script>
 </body>
 </html>
