@@ -9,7 +9,7 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;500;600&family=Great+Vibes&family=Montserrat:wght@400;500&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="style.css?v=27">
+    <link rel="stylesheet" href="style.css?v=28">
 </head>
 <body class="gate-locked">
     <!-- Password Gate -->
@@ -82,8 +82,8 @@
         <p class="share-subtitle">Be our disposable camera for the day — snap your favourite moments from the celebration and share them straight to us.</p>
         <div class="upload-card">
             <label class="upload-name">
-                <span>Your name (optional)</span>
-                <input type="text" id="uploaderName" placeholder="e.g. Aunt May" autocomplete="name" maxlength="60">
+                <span>Your name <em>(required)</em></span>
+                <input type="text" id="uploaderName" placeholder="e.g. Aunt May" autocomplete="name" maxlength="60" required>
             </label>
 
             <button type="button" class="camera-open-btn" id="openCameraBtn">
@@ -149,6 +149,6 @@
     </div>
 
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-    <script src="share.js?v=27"></script>
+    <script src="share.js?v=28"></script>
 </body>
 </html>

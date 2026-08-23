@@ -1497,12 +1497,19 @@ body {
 /* Camera filter picker */
 .camera-filters {
     display: flex;
+    flex-wrap: nowrap;
     gap: 0.5rem;
+    width: 100%;
     overflow-x: auto;
     padding: 0.85rem 1rem;
     background: #000;
     -webkit-overflow-scrolling: touch;
     scrollbar-width: none;
+    scroll-snap-type: x proximity;
+}
+
+.filter-chip {
+    scroll-snap-align: center;
 }
 
 .camera-filters::-webkit-scrollbar {

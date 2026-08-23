@@ -32,6 +32,15 @@ const SUPABASE_CONFIG = {
             .replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, '').slice(0, 40) || 'guest';
     }
 
+    function requireName() {
+        if (nameInput.value.trim()) return true;
+        status.textContent = 'Please add your name first so we know who shared these 💛';
+        status.className = 'upload-status show error';
+        nameInput.focus();
+        nameInput.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        return false;
+    }
+
     function refresh() {
         const valid = items.filter(it => !it.tooLarge).length;
         sendBtn.hidden = valid === 0;
@@ -164,7 +173,14 @@ const SUPABASE_CONFIG = {
         modal.setAttribute('aria-hidden', 'true');
     }
 
-    openCameraBtn.addEventListener('click', openCamera);
+    openCameraBtn.addEventListener('click', () => {
+        if (!requireName()) return;
+        if (document.fonts && document.fonts.load) {
+            document.fonts.load("40px 'Great Vibes'");
+            document.fonts.load("600 30px Montserrat");
+        }
+        openCamera();
+    });
     closeCam.addEventListener('click', closeCamera);
     flipBtn.addEventListener('click', () => {
         facing = facing === 'environment' ? 'user' : 'environment';
@@ -233,19 +249,28 @@ const SUPABASE_CONFIG = {
     function drawStamp(ctx, w, h) {
         const { date, time } = stampParts();
         const name = (nameInput.value || '').trim();
-        const size = Math.round(Math.max(w, h) * 0.028);
-        const pad = Math.round(size * 1.1);
+        const base = Math.max(w, h);
+        const pad = Math.round(base * 0.045);
         ctx.save();
         ctx.textAlign = 'right';
         ctx.textBaseline = 'bottom';
-        ctx.fillStyle = '#ff9e3d';
-        ctx.shadowColor = 'rgba(255,120,20,0.85)';
-        ctx.shadowBlur = size * 0.5;
-        ctx.font = `600 ${size}px Montserrat, monospace`;
-        ctx.fillText(`${date}  ${time}`, w - pad, h - pad);
+
+        // Date + time — warm film date-stamp glow
+        const dsSize = Math.round(base * 0.024);
+        ctx.font = `600 ${dsSize}px Montserrat, sans-serif`;
+        ctx.fillStyle = '#ffb04a';
+        ctx.shadowColor = 'rgba(255,120,20,0.9)';
+        ctx.shadowBlur = dsSize * 0.6;
+        ctx.fillText(`${date}   ${time}`, w - pad, h - pad);
+
+        // Name — elegant script above the stamp, in soft white
         if (name) {
-            ctx.font = `600 ${Math.round(size * 0.82)}px Montserrat, monospace`;
-            ctx.fillText(name, w - pad, h - pad - size * 1.35);
+            const nSize = Math.round(base * 0.058);
+            ctx.font = `400 ${nSize}px 'Great Vibes', cursive`;
+            ctx.fillStyle = '#ffffff';
+            ctx.shadowColor = 'rgba(0,0,0,0.5)';
+            ctx.shadowBlur = nSize * 0.3;
+            ctx.fillText(name, w - pad, h - pad - dsSize * 1.9);
         }
         ctx.restore();
     }
@@ -310,6 +335,7 @@ const SUPABASE_CONFIG = {
     sendBtn.addEventListener('click', async () => {
         const valid = items.filter(it => !it.tooLarge);
         if (!valid.length) return;
+        if (!requireName()) return;
         sendBtn.disabled = true;
         progress.hidden = false;
         progressBar.style.width = '0';
