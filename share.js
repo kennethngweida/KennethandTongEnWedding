@@ -102,12 +102,12 @@ const SUPABASE_CONFIG = {
 
     // Filters guests can choose — the CSS filter drives both the live preview and the saved photo
     const FILTERS = [
-        { name: 'Disposable', filter: 'contrast(1.1) saturate(1.25) sepia(0.14) brightness(1.03)', grain: 0.06, vignette: 0.4, leak: true },
-        { name: 'Classic', filter: 'contrast(1.05) saturate(1.05)', grain: 0.02, vignette: 0.2, leak: false },
-        { name: 'B&W', filter: 'grayscale(1) contrast(1.15) brightness(1.02)', grain: 0.05, vignette: 0.35, leak: false },
-        { name: 'Vintage', filter: 'sepia(0.5) contrast(0.95) saturate(1.1) brightness(1.05)', grain: 0.07, vignette: 0.45, leak: true },
-        { name: 'Warm', filter: 'sepia(0.2) saturate(1.3) contrast(1.05) brightness(1.05)', grain: 0.03, vignette: 0.25, leak: true },
-        { name: 'Cool', filter: 'hue-rotate(-10deg) saturate(1.1) contrast(1.08) brightness(1.02)', grain: 0.03, vignette: 0.3, leak: false }
+        { name: 'Kodak Gold', filter: 'saturate(1.35) contrast(1.02) brightness(1.05) sepia(0.22)', grain: 0.05, vignette: 0.3, leak: true, halation: 0.28, fade: 0.1 },
+        { name: 'Portra', filter: 'saturate(1.08) contrast(0.95) brightness(1.06) sepia(0.1)', grain: 0.04, vignette: 0.25, leak: false, halation: 0.22, fade: 0.13 },
+        { name: 'Cinestill', filter: 'saturate(1.15) contrast(1.05) brightness(1.02) hue-rotate(-8deg)', grain: 0.05, vignette: 0.35, leak: false, halation: 0.5, fade: 0.06 },
+        { name: 'Disposable', filter: 'contrast(1.1) saturate(1.25) sepia(0.14) brightness(1.03)', grain: 0.07, vignette: 0.4, leak: true, halation: 0.2, fade: 0.05 },
+        { name: 'B&W Film', filter: 'grayscale(1) contrast(1.2) brightness(1.02)', grain: 0.09, vignette: 0.4, leak: false, halation: 0.12, fade: 0.09 },
+        { name: 'Vintage', filter: 'sepia(0.5) contrast(0.9) saturate(1.05) brightness(1.05)', grain: 0.07, vignette: 0.45, leak: true, halation: 0.15, fade: 0.17 }
     ];
     let selected = FILTERS[0];
     const filtersEl = document.getElementById('cameraFilters');
@@ -199,6 +199,37 @@ const SUPABASE_CONFIG = {
         ctx.restore();
     }
 
+    // Lift the blacks toward a warm dark grey — film never has pure black
+    function liftBlacks(ctx, w, h, amount) {
+        ctx.save();
+        ctx.globalCompositeOperation = 'lighten';
+        const lv = Math.min(Math.round(amount * 180), 60);
+        ctx.fillStyle = `rgb(${Math.min(lv + 5, 66)}, ${lv}, ${Math.max(lv - 5, 0)})`;
+        ctx.fillRect(0, 0, w, h);
+        ctx.restore();
+    }
+
+    // Halation — the glow that bleeds around bright areas on film (red on Cinestill)
+    function addHalation(ctx, srcCanvas, w, h, amount, name) {
+        const hal = document.createElement('canvas');
+        hal.width = w; hal.height = h;
+        const hctx = hal.getContext('2d');
+        hctx.filter = 'brightness(1.1) contrast(6)'; // isolate the highlights
+        hctx.drawImage(srcCanvas, 0, 0, w, h);
+        hctx.filter = 'none';
+        hctx.globalCompositeOperation = 'multiply'; // tint the glow
+        hctx.fillStyle = name === 'B&W Film' ? 'rgba(255,255,255,1)'
+            : name === 'Cinestill' ? 'rgba(255,45,25,1)' : 'rgba(255,120,55,1)';
+        hctx.fillRect(0, 0, w, h);
+        ctx.save();
+        ctx.globalCompositeOperation = 'screen';
+        ctx.globalAlpha = amount;
+        ctx.filter = `blur(${Math.max(w, h) * 0.012}px)`;
+        ctx.drawImage(hal, 0, 0, w, h);
+        ctx.restore();
+        ctx.filter = 'none';
+    }
+
     function drawStamp(ctx, w, h) {
         const { date, time } = stampParts();
         const name = (nameInput.value || '').trim();
@@ -244,6 +275,8 @@ const SUPABASE_CONFIG = {
         ctx.restore();
         ctx.filter = 'none';
 
+        if (selected.fade) liftBlacks(ctx, w, h, selected.fade);
+        if (selected.halation) addHalation(ctx, canvas, w, h, selected.halation, selected.name);
         if (selected.grain) addGrain(ctx, w, h, selected.grain);
 
         if (selected.vignette) {
@@ -281,17 +314,38 @@ const SUPABASE_CONFIG = {
         progress.hidden = false;
         progressBar.style.width = '0';
         const folder = slug(nameInput.value);
+        const now = new Date();
+        const datePart = `${now.getFullYear()}-${pad2(now.getMonth() + 1)}-${pad2(now.getDate())}`;
+        const prefix = `${folder}_${datePart}_`; // e.g. aunt-may_2026-12-05_
+
+        // Continue the numbering from photos this guest already shared today
+        let n = 1;
+        try {
+            const { data: existing } = await client.storage.from(SUPABASE_CONFIG.bucket).list(folder, { limit: 1000 });
+            const nums = (existing || [])
+                .filter(f => f.name.startsWith(prefix))
+                .map(f => parseInt(f.name.slice(prefix.length), 10))
+                .filter(x => !isNaN(x));
+            if (nums.length) n = Math.max(...nums) + 1;
+        } catch (e) { /* if listing isn't allowed, just start at 1 */ }
+
         let ok = 0, fail = 0;
         for (let i = 0; i < valid.length; i++) {
             const f = valid[i].file;
             status.textContent = `Uploading ${i + 1} of ${valid.length}…`;
             status.className = 'upload-status show';
             const ext = (f.name.split('.').pop() || 'jpg').toLowerCase().replace(/[^a-z0-9]/g, '') || 'jpg';
-            const path = `${folder}/${Date.now()}-${Math.random().toString(36).slice(2, 8)}.${ext}`;
-            const { error } = await client.storage
-                .from(SUPABASE_CONFIG.bucket)
-                .upload(path, f, { contentType: f.type || 'image/jpeg', upsert: false });
-            if (error) { fail++; console.error(error); } else { ok++; }
+            let done = false, guard = 0;
+            while (!done && guard < 100) {
+                const path = `${folder}/${prefix}${n}.${ext}`; // guestname_date_N.jpg
+                const { error } = await client.storage
+                    .from(SUPABASE_CONFIG.bucket)
+                    .upload(path, f, { contentType: f.type || 'image/jpeg', upsert: false });
+                if (!error) { ok++; n++; done = true; }
+                else if (/exist/i.test(error.message || '') || error.statusCode === '409') { n++; guard++; } // name taken, try next number
+                else { fail++; console.error(error); break; }
+            }
+            if (!done && guard >= 100) fail++;
             progressBar.style.width = `${Math.round(((i + 1) / valid.length) * 100)}%`;
         }
         sendBtn.disabled = false;
