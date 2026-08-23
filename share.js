@@ -294,7 +294,6 @@ const SUPABASE_CONFIG = {
         const ctx = canvas.getContext('2d');
 
         ctx.save();
-        if (facing === 'user') { ctx.translate(w, 0); ctx.scale(-1, 1); }
         ctx.filter = selected.filter;
         ctx.drawImage(video, 0, 0, w, h);
         ctx.restore();
