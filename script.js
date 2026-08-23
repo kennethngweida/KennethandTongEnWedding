@@ -115,6 +115,16 @@ const lightboxImg = document.getElementById('lightboxImg');
 const lightboxClose = document.getElementById('lightboxClose');
 const galleryContainer = document.getElementById('galleryContainer');
 
+let lbList = [];
+let lbIndex = 0;
+
+function showLightboxAt(i) {
+    if (!lbList.length) return;
+    lbIndex = (i + lbList.length) % lbList.length; // wrap around
+    lightboxImg.src = lbList[lbIndex].src;
+    lightboxImg.alt = lbList[lbIndex].alt || '';
+}
+
 function closeLightbox() {
     lightbox.classList.remove('open');
     lightbox.setAttribute('aria-hidden', 'true');
@@ -122,21 +132,41 @@ function closeLightbox() {
 }
 
 if (lightbox && galleryContainer) {
-    // Delegate: gallery photos are added dynamically after fetch
+    const prevBtn = document.getElementById('lightboxPrev');
+    const nextBtn = document.getElementById('lightboxNext');
+
+    // Delegate: gallery photos are added dynamically
     galleryContainer.addEventListener('click', function(e) {
         const img = e.target.closest('.gallery-item img');
         if (!img) return;
-        lightboxImg.src = img.src;
-        lightboxImg.alt = img.alt;
+        lbList = Array.from(galleryContainer.querySelectorAll('.gallery-item img'));
+        showLightboxAt(lbList.indexOf(img));
         lightbox.classList.add('open');
         lightbox.setAttribute('aria-hidden', 'false');
     });
 
+    prevBtn.addEventListener('click', function(e) { e.stopPropagation(); showLightboxAt(lbIndex - 1); });
+    nextBtn.addEventListener('click', function(e) { e.stopPropagation(); showLightboxAt(lbIndex + 1); });
+    lightboxImg.addEventListener('click', function(e) { e.stopPropagation(); }); // tapping the photo doesn't close
+
     lightbox.addEventListener('click', closeLightbox);
     lightboxClose.addEventListener('click', closeLightbox);
     document.addEventListener('keydown', function(e) {
+        if (!lightbox.classList.contains('open')) return;
         if (e.key === 'Escape') closeLightbox();
+        else if (e.key === 'ArrowLeft') showLightboxAt(lbIndex - 1);
+        else if (e.key === 'ArrowRight') showLightboxAt(lbIndex + 1);
     });
+
+    // Swipe left/right on touch
+    let touchX = null;
+    lightbox.addEventListener('touchstart', function(e) { touchX = e.changedTouches[0].clientX; }, { passive: true });
+    lightbox.addEventListener('touchend', function(e) {
+        if (touchX === null) return;
+        const dx = e.changedTouches[0].clientX - touchX;
+        if (Math.abs(dx) > 40) showLightboxAt(lbIndex + (dx < 0 ? 1 : -1));
+        touchX = null;
+    }, { passive: true });
 }
 
 // Photo albums — four scenic views from the Lijiang photoshoot.
