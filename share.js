@@ -43,7 +43,7 @@ const SUPABASE_CONFIG = {
     const progress = document.getElementById('uploadProgress');
     const progressBar = document.getElementById('uploadProgressBar');
     const nameInput = document.getElementById('uploaderName');
-    const MAX_BYTES = 25 * 1024 * 1024; // 25 MB per photo
+    const MAX_BYTES = 50 * 1024 * 1024; // 50 MB per photo — keep full-resolution originals
     let items = []; // { file, url, tooLarge }
 
     function slug(s) {
@@ -163,7 +163,7 @@ const SUPABASE_CONFIG = {
         camError.hidden = true;
         try {
             stream = await navigator.mediaDevices.getUserMedia({
-                video: { facingMode: facing, width: { ideal: 1920 }, height: { ideal: 1080 } },
+                video: { facingMode: facing, width: { ideal: 4096 }, height: { ideal: 2160 } },
                 audio: false
             });
             video.srcObject = stream;
@@ -306,8 +306,8 @@ const SUPABASE_CONFIG = {
         const vw = video.videoWidth, vh = video.videoHeight;
         if (!vw || !vh) return;
 
-        const scale = Math.min(1, 1600 / Math.max(vw, vh));
-        const w = Math.round(vw * scale), h = Math.round(vh * scale);
+        // Capture at the camera's full resolution — no downscaling — to keep quality
+        const w = vw, h = vh;
         canvas.width = w;
         canvas.height = h;
         const ctx = canvas.getContext('2d');
@@ -347,7 +347,7 @@ const SUPABASE_CONFIG = {
             items.push({ file, url: URL.createObjectURL(blob), tooLarge: false });
             render();
             refresh();
-        }, 'image/jpeg', 0.9);
+        }, 'image/jpeg', 0.95);
     });
 
     sendBtn.addEventListener('click', async () => {
