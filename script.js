@@ -1,6 +1,6 @@
 // Countdown Timer
 function updateCountdown() {
-    const weddingDate = new Date('2026-12-05T10:30:00').getTime();
+    const weddingDate = new Date('2026-12-05T10:25:00').getTime();
 
     function countDown() {
         const now = new Date().getTime();
@@ -71,8 +71,8 @@ if (addToCalendarBtn) {
         const event = {
             title: "Kenneth & Tong En's Wedding",
             // Pinned to Singapore time (UTC+8, no DST) expressed in UTC:
-            // 10:30 SGT = 02:30 UTC, 16:00 SGT = 08:00 UTC. Renders correctly in any timezone.
-            start: '20261205T023000Z',
+            // 10:25 SGT = 02:25 UTC, 16:00 SGT = 08:00 UTC. Renders correctly in any timezone.
+            start: '20261205T022500Z',
             end: '20261205T080000Z',
             location: 'JW Marriott Hotel Singapore South Beach, 30 Beach Road, Singapore 189763',
             description: 'We would be delighted to celebrate our wedding with you. Dress code: Black and Pink.'
