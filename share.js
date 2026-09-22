@@ -9,6 +9,25 @@ const SUPABASE_CONFIG = {
     const status = document.getElementById('uploadStatus');
     if (!status) return;
 
+    // Photo sharing goes live on the wedding day. Add "?preview" to the URL to test early.
+    const OPEN_AT = Date.UTC(2026, 11, 4, 16, 0, 0); // 5 Dec 2026, 00:00 Singapore time (UTC+8)
+    if (Date.now() < OPEN_AT && !/[?&]preview\b/.test(location.search)) {
+        const card = document.querySelector('.upload-card');
+        const gallery = document.querySelector('.guest-gallery');
+        if (card) {
+            card.innerHTML =
+                '<div class="upload-soon">' +
+                    '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">' +
+                        '<path d="M14.5 4h-5L7 7H4a2 2 0 0 0-2 2v9a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V9a2 2 0 0 0-2-2h-3l-2.5-3Z"/><circle cx="12" cy="13" r="3.5"/>' +
+                    '</svg>' +
+                    '<h3>Photo sharing opens on our wedding day</h3>' +
+                    '<p>Come back on <strong>5 December 2026</strong> to snap and share your photos with us. 💛</p>' +
+                '</div>';
+        }
+        if (gallery) gallery.hidden = true;
+        return;
+    }
+
     if (!window.supabase) {
         status.textContent = 'Photo sharing could not load. Please refresh the page.';
         status.className = 'upload-status show error';
