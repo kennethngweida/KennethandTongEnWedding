@@ -175,24 +175,28 @@ const ALBUMS = [
     {
         name: '束河古鎮',
         folder: 'photoshoot/1-shuhe',
+        subtitle: 'Shuhe Old Town',
         cover: '_E9A2990.jpg',
         photos: ['_E9A2965.jpg', '_E9A2980.jpg', '_E9A2983.jpg', '_E9A2985.jpg', '_E9A2986.jpg', '_E9A2989.jpg', '_E9A2990.jpg', '_E9A2994.jpg', '_E9A2999.jpg', '_E9A3000.jpg', '_E9A3004.jpg', '_E9A3008FRAMEpeachlong.jpg', '_E9A3011.jpg', '_E9A3016.jpg', '_E9A3018.jpg', '_E9A3019.jpg', '_E9A3020.jpg', '_E9A3024.jpg', '_E9A3025.jpg', '_E9A3026.jpg', '_E9A3027.jpg', '_E9A3029-2.jpg', '_E9A3030-2.jpg', '_E9A3031-2.jpg', '_E9A3032-2.jpg', '_E9A3034-2.jpg', '_E9A3036-2.jpg', '_E9A3037-2.jpg', '_E9A3038-2.jpg', '_E9A3039-2.jpg']
     },
     {
         name: '玉龍雪山公路',
         folder: 'photoshoot/2-snow-mountain-road',
+        subtitle: 'Jade Dragon Snow Mountain Road',
         cover: '_E9A3106.jpg',
         photos: ['_E9A3076.jpg', '_E9A3078.jpg', '_E9A3079.jpg', '_E9A3086.jpg', '_E9A3087.jpg', '_E9A3093.jpg', '_E9A3094.jpg', '_E9A3099.jpg', '_E9A3103.jpg', '_E9A3106.jpg', '_E9A3107.jpg', '_E9A3109.jpg', '_E9A3116.jpg', '_E9A3117.jpg', '_E9A3118.jpg', '_E9A3120.jpg', '_E9A3130.jpg', '_E9A3134.jpg', '_E9A3135.jpg', '_E9A3140.jpg', '_E9A3141.jpg', '_E9A3143.jpg']
     },
     {
         name: '藍月谷',
         folder: 'photoshoot/3-blue-moon-valley',
+        subtitle: 'Blue Moon Valley',
         cover: '_E9A3188.jpg',
         photos: ['_E9A3149.jpg', '_E9A3152.jpg', '_E9A3153.jpg', '_E9A3159.jpg', '_E9A3160.jpg', '_E9A3162.jpg', '_E9A3163.jpg', '_E9A3166.jpg', '_E9A3171.jpg', '_E9A3173.jpg', '_E9A3179.jpg', '_E9A3180.jpg', '_E9A3181.jpg', '_E9A3183.jpg', '_E9A3185.jpg', '_E9A3188.jpg', '_E9A3189.jpg', '_E9A3190.jpg', '_E9A3191.jpg', '_E9A3192.jpg', '_E9A3193.jpg', '_E9A3195.jpg', '_E9A3196.jpg', '_E9A3198.jpg', '_E9A3199.jpg', '_E9A3200.jpg', '_E9A3201.jpg', '_E9A3203.jpg', '_E9A3204.jpg', '_E9A3212.jpg', '_E9A3213.jpg', '_E9A3218.jpg', '_E9A3220.jpg', '_E9A3222.jpg', '_E9A3224.jpg', '_E9A3225.jpg']
     },
     {
         name: '雲杉坪',
         folder: 'photoshoot/4-yunshanping',
+        subtitle: 'Spruce Meadow',
         cover: '_E9A3231.jpg',
         photos: ['_E9A3231.jpg', '_E9A3234.jpg', '_E9A3235.jpg', '_E9A3236.jpg', '_E9A3237.jpg', '_E9A3238.jpg', '_E9A3243.jpg', '_E9A3244.jpg', '_E9A3249.jpg', '_E9A3250.jpg', '_E9A3252.jpg', '_E9A3254.jpg', '_E9A3258FRAMEPEACHSQUARE.jpg', '_E9A3259.jpg', '_E9A3262.jpg', '_E9A3263.jpg', '_E9A3264.jpg', '_E9A3268.jpg', '_E9A3269.jpg', '_E9A3270.jpg', '_E9A3272.jpg', '_E9A3273.jpg', '_E9A3274.jpg', '_E9A3275.jpg', '_E9A3276.jpg', '_E9A3277.jpg', '_E9A3278.jpg', '_E9A3280.jpg', '_E9A3288.jpg', '_E9A3291.jpg', '_E9A3292.jpg', '_E9A3293copy.jpg', '_E9A3294.jpg', '_E9A3297.jpg', '_E9A3298.jpg', '_E9A3299.jpg', '_E9A3300.jpg', '_E9A3302.jpg', '_E9A3304.jpg', '_E9A328320x16FRAMEFR003.jpg']
     },
@@ -205,9 +209,11 @@ function renderAlbums() {
     const back = document.getElementById('albumBack');
     const title = document.getElementById('albumTitle');
 
+    const intro = document.getElementById('galleryIntro');
     back.hidden = true;
     title.hidden = true;
-    note.textContent = 'Select an album to view the photos.';
+    if (intro) intro.hidden = false;
+    note.textContent = 'Choose a chapter to explore';
 
     container.className = 'gallery-container album-grid';
     container.innerHTML = '';
@@ -217,8 +223,10 @@ function renderAlbums() {
         tile.style.backgroundImage = `url('${album.folder}/${album.cover}')`;
         tile.innerHTML =
             '<span class="album-tile-overlay">' +
+                (album.subtitle ? '<span class="album-tile-sub">' + album.subtitle + '</span>' : '') +
                 '<span class="album-tile-name">' + album.name + '</span>' +
                 '<span class="album-tile-count">' + album.photos.length + ' photos</span>' +
+                '<span class="album-tile-view">View Album &rarr;</span>' +
             '</span>';
         tile.addEventListener('click', () => openAlbum(i));
         container.appendChild(tile);
@@ -233,10 +241,12 @@ function openAlbum(index) {
     const back = document.getElementById('albumBack');
     const title = document.getElementById('albumTitle');
 
+    const intro = document.getElementById('galleryIntro');
     back.hidden = false;
     title.hidden = false;
-    title.textContent = album.name;
-    note.textContent = 'Tap a photo to view it full size.';
+    if (intro) intro.hidden = true;
+    title.textContent = album.subtitle ? `${album.name} · ${album.subtitle}` : album.name;
+    note.textContent = 'Tap a photo — then swipe or use the arrows to browse';
 
     container.className = 'gallery-container';
     container.innerHTML = '';
