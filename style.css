@@ -1613,6 +1613,15 @@ body {
     }
 }
 
+.upload-tip {
+    margin-top: 1rem;
+    text-align: center;
+    color: var(--gray-dark);
+    font-size: 0.8rem;
+    font-style: italic;
+    line-height: 1.5;
+}
+
 /* Photo sharing — pre-wedding "coming soon" state */
 .upload-soon {
     text-align: center;
