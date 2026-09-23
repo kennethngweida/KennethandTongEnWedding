@@ -75,7 +75,7 @@ if (addToCalendarBtn) {
             start: '20261205T022500Z',
             end: '20261205T080000Z',
             location: 'JW Marriott Hotel Singapore South Beach, 30 Beach Road, Singapore 189763',
-            description: 'We would be delighted to celebrate our wedding with you. Dress code: Formal / Smart Casual (Black & Pink).'
+            description: 'We would be delighted to celebrate our wedding with you. Dress code: Formal / Smart Casual (Black or Pink).'
         };
 
         const stamp = new Date().toISOString().replace(/[-:]/g, '').split('.')[0] + 'Z';
