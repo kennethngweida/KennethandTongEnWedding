@@ -514,7 +514,7 @@ body {
 }
 
 .timeline-time {
-    flex: 0 0 150px;
+    flex: 1;
     font-size: 1.3rem;
     font-weight: 600;
     color: var(--accent);
